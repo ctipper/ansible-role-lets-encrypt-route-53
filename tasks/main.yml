@@ -60,17 +60,6 @@
   tags:
   - install
 
-- name: install the required dependencies (MacOS)
-  homebrew:
-    name:
-    - openssl@1.1
-    - python3
-    state: present
-  become: no
-  when: ansible_os_family == 'Darwin'
-  tags:
-  - install
-
 - name: "create the {{ ler53_cert_dir }} directory"
   file:
     path: "{{ ler53_cert_dir }}"
