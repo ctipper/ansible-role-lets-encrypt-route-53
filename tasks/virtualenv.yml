@@ -26,9 +26,17 @@
   - install
 
 - name: install virtualenv (MacOS)
-  pip:
-    name: virtualenv
-    state: present
+  command: "{{ ansible_python_interpreter }} -m venv ansible-lets-encrypt-virtualenv"
+  args:
+    chdir: "{{ ler53_account_key_dir }}"
+  when: ansible_os_family == 'Darwin'
+  tags:
+  - install
+
+- name: Activate the virtual environment
+  shell: source ansible-lets-encrypt-virtualenv/bin/activate
+  args:
+    chdir: "{{ ler53_account_key_dir }}"
   when: ansible_os_family == 'Darwin'
   tags:
   - install
@@ -41,12 +49,13 @@
     virtualenv: "{{ ler53_account_key_dir }}/ansible-lets-encrypt-virtualenv"
     # This is required for libselinux-python
     virtualenv_site_packages: yes
+    virtualenv_command: "{{ ansible_python_interpreter }} -m venv"
   with_items:
-  # Update setuptools
-  - name: setuptools>44.0.0,<45.0.0
-    state: present
+ # Update setuptools
+  #- name: setuptools>44.0.0,<45.0.0
+  #  state: present
   - name: pyOpenSSL
-  - name: boto
+  - name: boto3
   - name: enum34
   - name: ipaddress
   - name: cffi
@@ -58,5 +67,6 @@
 - name: use the created virtualenv
   set_fact:
     ansible_python_interpreter: "{{ ler53_account_key_dir }}/ansible-lets-encrypt-virtualenv/bin/python"
+  when: not ansible_check_mode
   tags:
   - install
