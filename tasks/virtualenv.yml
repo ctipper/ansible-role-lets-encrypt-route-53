@@ -25,22 +25,6 @@
   tags:
   - install
 
-- name: install virtualenv (MacOS)
-  command: "{{ ansible_python_interpreter }} -m venv ansible-lets-encrypt-virtualenv"
-  args:
-    chdir: "{{ ler53_account_key_dir }}"
-  when: ansible_os_family == 'Darwin'
-  tags:
-  - install
-
-- name: Activate the virtual environment
-  shell: source ansible-lets-encrypt-virtualenv/bin/activate
-  args:
-    chdir: "{{ ler53_account_key_dir }}"
-  when: ansible_os_family == 'Darwin'
-  tags:
-  - install
-
 - name: install pyOpenSSL and boto in a virtualenv (Red Hat/ MacOS)
   pip:
     name: "{{ ler53_item.name }}"
